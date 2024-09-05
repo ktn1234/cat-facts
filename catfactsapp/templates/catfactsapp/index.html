@@ -1,0 +1,71 @@
+{% extends 'catfactsapp/base.html' %}
+
+{% block title %}Random Cat Facts{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column align-items-center" hx-get="/" hx-trigger="every 2s" hx-target="body">
+  <h1 class="h1 m-3">Generate Random Cat Facts</h1>
+  <div class="d-flex gap-3">
+    <form action="{% url 'index' %}" method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">Generate</button>
+    </form>
+    <form action="{% url 'index' %}" method="GET">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-success">Refresh</button>
+    </form>
+  </div>
+  <!-- <div class="m-3 w-75 d-flex justify-content-center">
+    <p>{{fact}}</p>
+  </div> -->
+  <h3 class="h3 m-3">History</h3>
+  {% if cat_fact_tasks %}
+  <div class="w-75">
+    <table class="table table-bordered table-striped text-center">
+      <thead>
+          <tr>
+              <th>Task ID</th>
+              <th>Name</th>
+              <th>Result</th>
+              <th>Status</th>
+              <th>Started</th>
+              <th>Completed</th>
+              <th>Actions</th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for cat_fact in cat_fact_tasks %}
+          <tr>
+              {% if cat_fact.status == 'Success' %}
+              <td><a href="/admin/django_q/success/{{ cat_fact.id }}/change/" target="_blank" rel=“noopener noreferrer”>{{ cat_fact.id }}</a></td>
+              {% elif cat_fact.status == "Failed" %}
+              <td><a href="/admin/django_q/failure/{{ cat_fact.id }}/change/" target="_blank" rel=“noopener noreferrer”>{{ cat_fact.id }}</a></td>
+              {% else %}
+              <td>{{ cat_fact.id }}</td>
+              {% endif %}
+              {% if cat_fact.task is not None %}
+              <td>{{ cat_fact.task.name }}</td>
+              {% else %}
+              <td></td>
+              {% endif %}
+              <td>{{ cat_fact.result }}</td>
+              <td>{{ cat_fact.status }}</td>
+              <td>{{ cat_fact.started }}</td>
+              <td>{{ cat_fact.completed }}</td>
+              {% if cat_fact.status == 'Success' %}
+              <td>
+                  <a href="{% url 'index_delete' cat_fact.id %}" class="btn btn-danger">Delete</a>
+              </td>
+              {% else %}
+              <td></td>
+              {% endif %}
+          </tr>
+          {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p>No history available</p>
+  {% endif %}
+</div>
+{% endblock %}

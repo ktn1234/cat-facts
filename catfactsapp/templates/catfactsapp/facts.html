@@ -1,0 +1,25 @@
+{% extends 'catfactsapp/base.html' %}
+{% block title %}Cat Facts{% endblock %}
+{% block content %}
+<div class="d-flex flex-column align-items-center">
+  <h1 class="h1 m-3">Cat Facts</h1>
+  <div class="w-75">
+    <table class="table table-bordered table-striped text-center">
+      <thead>
+          <tr>
+              <th>#</th>
+              <th>Facts</th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for cat_fact in cat_facts %}
+          <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ cat_fact.fact }}</td>
+          </tr>
+          {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
